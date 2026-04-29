@@ -1,0 +1,54 @@
+# terraform_example/test02_basic/for/main.tf
+
+variable "user_list" {
+  # 문자열 목록(배열)
+  type    = list(string)
+  default = ["alice", "bob", "david", "scott", "json"]
+}
+
+output "debug01_user_list" {
+  value = [for item in var.user_list : item]
+}
+
+output "debug02_user_list2" {
+  # 배열에 저장된 item(문자열)을 대문자로 변환해서 출력
+  value = [for item in var.user_list : upper(item)]
+}
+
+output "debug03_user_list3" {
+  # 배열에 저장된 item(문자열)의 길이가 4보다 작은값만 출력 (필터링이된다..)
+  value = [for item in var.user_list : item if length(item) <= 4]
+}
+
+# 결과 데이터를 map 형태로 얻어내고싶으면..
+output "debug04_user_list4" {
+  # { 키 => 값 } 형태로 결과가 나오며, 중괄호 { } 를 사용
+  value = { for name in var.user_list : name => "IAM-USER-${name}" }
+}
+
+# 반복문 돌면서 index 값도 활용해보면
+output "debug05_user_list5" {
+  # for 인덱스, 값
+  value = [for index, item in var.user_list : "${index+1}번째 사용자: ${item}"]
+}
+
+# 복합 활용
+output "debug06_user_list6" {
+  # 인덱스를 key 값, item 을 value 값으로 가지는 map 만들기
+  # 인덱스가 문자열로 변환되어서 key 값으로 지정된다.
+  value = {for index, item in var.user_list : index => item}
+}
+
+# 여러줄의 문자열을 편하게 구성하기
+output "debug07_multiline" {
+    # value = <<-EOF 를 쓴다. 문자열 리다이렉션을 쓸 수 있다..
+    # <<- 기호를 쓰면 좌측의 공백이 알아서 제거가 된다.
+    # EOF는 마음대로 정할 수 있는 글자 끝날때만 동일한 문자열로 끝내면된다..
+  value = <<-EOF
+      #!/bin/bash
+      dnf update -y
+      dnf install -y nginx
+      systemctl enable nginx
+      systemctl start nginx
+  EOF
+}
