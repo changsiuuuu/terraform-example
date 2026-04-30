@@ -1,0 +1,12 @@
+# test02_basic/locals2/main.tf 
+
+# 변수에 들어있는 값을 활용해서 무언가 계산(조작)된 내부 전용 지역변수 만들어서 값 대입하기
+locals {
+  # 변수에 들어있는 값을 이용해서 새로운 문자열을 만들어냄. 대입
+  resource_name = "${var.project_name}-${var.env}-file"
+}
+
+resource "local_file" "example" {
+  filename = "${path.module}/${local.resource_name}"
+  content  = "현재 환경은 ${var.env}입니다"
+}
