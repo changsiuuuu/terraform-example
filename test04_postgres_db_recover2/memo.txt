@@ -1,0 +1,8 @@
+# 생성된 s3 bucket 의 이름
+s3_bucket_name = "db-backup-storage-8d94e00d"
+
+# 현재 경로에있는 full_db_backup.sql 파일을 s3 버킷에 동일한 파일명으로 업로드하기
+aws s3 cp ./full_db_backup.sql s3://db-backup-storage-8d94e00d/full_db_backup.sql
+
+# 올라갔는지 목록 확인
+aws s3 ls s3://db-backup-storage-8d94e00d/
