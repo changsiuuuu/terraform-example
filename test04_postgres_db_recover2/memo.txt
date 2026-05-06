@@ -6,3 +6,9 @@ aws s3 cp ./full_db_backup.sql s3://db-backup-storage-8d94e00d/full_db_backup.sq
 
 # 올라갔는지 목록 확인
 aws s3 ls s3://db-backup-storage-8d94e00d/
+
+# 지우는 법
+aws s3 rm s3://db-backup-storage-8d94e00d/ --recursive
+
+# 테라폼 destroy
+tda
