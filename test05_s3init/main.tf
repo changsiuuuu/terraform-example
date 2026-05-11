@@ -31,3 +31,8 @@ resource "aws_s3_bucket" "tfstate_bucket" {
     # 4byte 크기의 random 한 16진수를 뒤에 붙여서 겹치지않는 이름이 나오게한다.
     bucket = "tfstate-bucket-${random_id.bucket_suffix.hex}"
 }
+
+output "bucket_id" {
+    value = aws_s3_bucket.tfstate_bucket.id
+    description = "생성된 s3 버킷의 전역 고유 이름입니다."  
+}
