@@ -13,3 +13,6 @@
 
 # Crash log files
 crash.log
+
+# tfvars 인증키와 민감한 정보가 있음
+terraform.tfvars
