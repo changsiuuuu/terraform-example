@@ -1,4 +1,4 @@
-# test08_autoscale/network.tf
+# test08_autoscale2/network.tf
 
 # vpc, subnet 등에 관련된 자원을 여기에 정의할 예정
 

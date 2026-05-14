@@ -1,4 +1,4 @@
-# test08_autoscale/compute.tf
+# test08_autoscale2/compute.tf
 
 # 1. SSH 키 페어 생성 (TLS 라이브러리 활용)
 resource "tls_private_key" "pk" {
@@ -73,6 +73,8 @@ resource "aws_launch_template" "lt" {
       dnf install -y nginx
       systemctl enable --now nginx
       echo "<h1>Hello from ASG Instance</h1>" > /usr/share/nginx/html/index.html
+      # stress 도구 추가설치
+      dnf install -y stress 
     EOF
   )
   # 시작 템플릿을 통해 생성될 리소스에 대한 상태 태그 설정
@@ -99,6 +101,9 @@ resource "aws_autoscaling_group" "asg" {
     # 항상 최신의 이미지를 사용하도록한다. ( 항상 최신의 template 을 사용하도록)
     version = "$Latest"
   }
+
+  # 기본 5분을 기다리고 나서 동작하지만 빠른 테스트를 위해 60초로 줄인다
+  default_cooldown = 60
 }
 
 # 6. ASG 에 의해 생성된 실제 인스턴스의 정보 조회
@@ -123,4 +128,24 @@ data "aws_instances" "asg_nodes" {
 output "asg_instance_ips" {
   description = "Auto Scaling Group 인스턴스들의 Public IP"
   value       = data.aws_instances.asg_nodes.public_ips
+}
+
+# 8. 동적 스케일링 정책
+resource "aws_autoscaling_policy" "cpu_scaling_policy" {
+  name                   = "cpu-target-tracking"
+  autoscaling_group_name = aws_autoscaling_group.asg.name
+  # 대상 추적 방식 : 특정 지표를 정해진 수치로 유지하도록 aws 가 알아서 조종
+  policy_type = "TargetTrackingScaling"
+  # 대상 추적 설정
+  target_tracking_configuration {
+    # 무엇을 기준으로 추적할것인가?
+    predefined_metric_specification {
+      # asg 그룹 내의 모든 인스턴스의cpu 사용평균값
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+    # 기준이 되는 사용량 50% ( 테스트를 위해 낮게 잡음 )
+    # 50 % 넘으면 scale out ec2 개수가 max까지 늘어남
+    # 50 % 아래면 scale in ec2 개수가 줄어들음 min까지
+    target_value = 50
+  }
 }

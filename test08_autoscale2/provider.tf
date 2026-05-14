@@ -1,4 +1,4 @@
-# test08_autoscale/provide.tf
+# test08_autoscale2/provide.tf
 
 # 테라폼 및 프로바이더 설정
 terraform {

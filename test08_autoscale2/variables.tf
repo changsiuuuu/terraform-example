@@ -1,4 +1,4 @@
-# test08_autoscale/variables.tf
+# test08_autoscale2/variables.tf
 
 # 변수 정의 
 variable "region" { default = "ap-northeast-2" }
