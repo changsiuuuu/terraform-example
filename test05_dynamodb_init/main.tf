@@ -10,7 +10,7 @@ terraform {
 }
 
 resource "aws_dynamodb_table" "terraform_lock" {
-    name = "terraform-lock"  # 테이블명 마음대로 지을 수 있다
+    name = "ccmall-terraform-lock"  # 테이블명 마음대로 지을 수 있다
     billing_mode = "PAY_PER_REQUEST" # 비용 지불 방식 (요청 개수당 과금)
     hash_key = "LockID" # 카테고리명 마음대로 (RDBMS의 PK와 유사)
 
