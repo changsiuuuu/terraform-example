@@ -1,16 +1,19 @@
 # test10_route53/route53.tf
 
+# route53.tf 은 route53의 호스팅 영역에 domain name을 등록하고 설정을 잘 해 놓았다면 바꿀게 없다. 그대로 사용하면됨.
+# 단지 ${var.domain_name이 잘 참조되도록 domain name 만 변수로 지정해놓으면 된다. 
+
 # 1. Route53 에 호스팅 영역 등록된 도메인 정보 조회
 data "aws_route53_zone" "selected" {
-    name = "${var.domain_name}." # 뒤에 반드시 . 을 붙여줘야한다.
-    private_zone = false # public 영역의 도메인이기때문에 
+  name         = "${var.domain_name}." # 뒤에 반드시 . 을 붙여줘야한다.
+  private_zone = false                 # public 영역의 도메인이기때문에 
 }
 
 # 2. ACM 인증서 발급 신청
 resource "aws_acm_certificate" "cert" {
   domain_name       = "*.${var.domain_name}" # 서브도메인용 (*.cloud-study.in)
   validation_method = "DNS"
-  
+
   # 루트 도메인(cloud-study.in)도 함께 보호
   subject_alternative_names = [var.domain_name]
 
@@ -50,6 +53,6 @@ resource "aws_acm_certificate_validation" "cert" {
 
 # 5. 발급된 인증서의 arn 확인 (출력)
 output "certificate_arn" {
-    value = aws_acm_certificate_validation.cert.certificate_arn
+  value = aws_acm_certificate_validation.cert.certificate_arn
 }
 
